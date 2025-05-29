@@ -74,3 +74,6 @@ plot <- create_voronoi_plot(
 ### Basic Visualization
 <img src="./example_plot.svg">
 
+## Citation
+Lötsch, J. and A. Ultsch (2024). "Comparative assessment of projection and clustering method combinations in the analysis of biomedical data." Informatics in Medicine Unlocked 50: 101573. 
+https://www.sciencedirect.com/science/article/pii/S2352914824001291
