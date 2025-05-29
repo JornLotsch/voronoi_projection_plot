@@ -9,6 +9,7 @@ ProjectionViz provides an intuitive way to visualize class separation in project
 ## Features
 
 - **Voronoi Tessellation Visualization**: Creates proximity-based regions showing natural class boundaries
+- **Dual Classification Support**: Allows separate classifications for point colors and Voronoi region fills
 - **Flexible Input Handling**: Works with various data formats and handles missing class labels gracefully
 - **Customizable Aesthetics**: Full control over colors, transparency, point sizes, and styling
 - **Label Support**: Optional case labeling with intelligent overlap avoidance
@@ -30,25 +31,65 @@ The package requires:
 ## Quick Start
 
 ### Create sample projected data
+```
 set.seed(123)
 
 projected_data <- data.frame(
   PC1 = rnorm(150, mean = rep(c(-2, 0, 2), each = 50)),
   PC2 = rnorm(150, mean = rep(c(1, -1, 0), each = 50))
 )
-
+```
 ### Add class labels
+```
 classes <- rep(c("Group A", "Group B", "Group C"), each = 50)
+```
 
 ### Create Voronoi visualization
+```
 plot <- create_voronoi_plot(
   data = projected_data,
   class_column = classes,
   title = "PCA Projection with Voronoi Tessellation",
   coord_names = c("PC1", "PC2")
 )
+```
+### Advanced Usage with Dual Classifications
 
+### Create alternative classification
+alt_classes <- rep(c("Type X", "Type Y"), length.out = 150)
+
+### Use different classifications for points and regions
+```
+plot <- create_voronoi_plot(
+  data = projected_data,
+  class_column = classes,
+  alternative_class_column = alt_classes,
+  color_points = "alternative",     # Points colored by alternative classification
+  fill_voronoi = "primary",         # Regions filled by primary classification
+  title = "Dual Classification Voronoi Plot"
+)
 ``` 
+
+### Specifying Coordinate Columns
+
+```r
+# When your data has numeric class columns that might interfere
+data_with_numeric_classes <- data.frame(
+  class_id = c(1, 2, 3, 1, 2, 3),  # numeric class column
+  PC1 = rnorm(6),
+  PC2 = rnorm(6),
+  other_numeric = runif(6)
+)
+
+# Explicitly specify which columns to use as coordinates
+plot <- create_voronoi_plot(
+  data = data_with_numeric_classes,
+  coordinate_columns = c("PC1", "PC2"),  # Specify coordinate columns
+  class_column = "class_id",
+  title = "Explicit Coordinate Specification"
+)
+```
+
 
 ## Main Function: `create_voronoi_plot()`
 
@@ -58,6 +99,8 @@ plot <- create_voronoi_plot(
 |-----------|------|---------|-------------|
 | `data` | data.frame | - | Data with ≥2 numeric columns for coordinates |
 | `class_column` | character/vector | NULL | Column name or vector of class labels |
+| `alternative_class_column` | character/vector | NULL | Alternative column name or vector of class labels |
+| `coordinate_columns` | character vector | NULL | Column names to use as coordinates (if NULL, uses first 2 numeric columns) |
 | `case_labels` | character vector | NULL | Individual case labels (uses row numbers if NULL) |
 | `coord_names` | character vector | c("Dim1", "Dim2") | Names for coordinate axes |
 | `title` | character | NULL | Plot title |
@@ -67,8 +110,10 @@ plot <- create_voronoi_plot(
 | `legend_position` | character/numeric | c(0.1, 0.1) | Legend position |
 | `color_palette` | function/character | NULL | Custom color palette |
 | `add_grid_lines` | logical | TRUE | Whether to add origin grid lines |
+| `color_points` | character | "primary" | Which classification to use for point colors ("primary" or "alternative") |
+| `fill_voronoi` | character | "primary" | Which classification to use for Voronoi fills ("primary" or "alternative") |
 
-```
+
 ## Examples
 
 ### Basic Visualization
