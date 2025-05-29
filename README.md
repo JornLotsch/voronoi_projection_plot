@@ -18,7 +18,6 @@ ProjectionViz provides an intuitive way to visualize class separation in project
 
 You can install ProjectionViz directly from GitHub:
 
-### Install from GitHub
 devtools::install_github("JornLotsch/voronoi_projection_plot")
 
 ## Dependencies
@@ -32,6 +31,7 @@ The package requires:
 
 ### Create sample projected data
 set.seed(123)
+
 projected_data <- data.frame(
   PC1 = rnorm(150, mean = rep(c(-2, 0, 2), each = 50)),
   PC2 = rnorm(150, mean = rep(c(1, -1, 0), each = 50))
@@ -68,7 +68,9 @@ plot <- create_voronoi_plot(
 | `color_palette` | function/character | NULL | Custom color palette |
 | `add_grid_lines` | logical | TRUE | Whether to add origin grid lines |
 
+```
 ## Examples
 
 ### Basic Visualization
+<img src="./example_plot.svg">
 
