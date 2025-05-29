@@ -18,9 +18,9 @@ ProjectionViz provides an intuitive way to visualize class separation in project
 ## Installation
 
 You can install ProjectionViz directly from GitHub:
-
+```
 devtools::install_github("JornLotsch/voronoi_projection_plot")
-
+```
 ## Dependencies
 
 The package requires:
@@ -56,8 +56,9 @@ plot <- create_voronoi_plot(
 ### Advanced Usage with Dual Classifications
 
 ### Create alternative classification
+```
 alt_classes <- rep(c("Type X", "Type Y"), length.out = 150)
-
+```
 ### Use different classifications for points and regions
 ```
 plot <- create_voronoi_plot(
