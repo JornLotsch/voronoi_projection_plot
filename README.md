@@ -94,6 +94,29 @@ plot <- create_voronoi_plot(
 
 ## Main Function: `create_voronoi_plot()`
 
+### Call
+```
+result <-
+  create_projection_plots(
+    data,
+    class_column = NULL,
+    alternative_class_column = NULL,
+    coordinate_columns = NULL,
+    case_labels = NULL,
+    coord_names = c("Dim1", "Dim2"),
+    title = NULL,
+    show_labels = FALSE,
+    ellipse_alpha = 0.1,
+    voronoi_alpha = 0.3,
+    point_size = 2,
+    legend_position = c(0.1, 0.1),
+    color_palette = NULL,
+    add_grid_lines = TRUE,
+    color_points = "primary",
+    fill_voronoi = "primary"
+  )
+```
+
 ### Parameters
 
 | Parameter | Type | Default | Description |
