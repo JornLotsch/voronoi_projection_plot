@@ -11,9 +11,13 @@ MEANS <- c(m1 = 4, m2 = 8)
 STANDARD_DEVIATIONS <- c(s1 = 1, s2 = 1)
 TOTAL_SAMPLES <- sum(SAMPLE_SIZES)
 CLASS_LABELS <- c(1, 2)
+SCENARIOS <- c("No_errors", "With_errors")
 PROJECTION_TYPE <- "PLS-DA"  # Default projection type
 SEED <- 12
+ERRORCOUNT <- 3
 show_labels <- FALSE
+
+source("create_projection_plots.R")
 
 ############### Data Generation Functions ##############################
 generate_variable_A <- function() {
@@ -72,6 +76,7 @@ create_synthetic_dataset_2cls <- function() {
 }
 
 ############### Plotting Functions ##############################
+
 create_boxplot <- function(data_frame) {
   data_long <- reshape2::melt(data_frame)
   ggplot(data_long, aes(x = variable, y = value, color = class, fill = class)) +
@@ -97,29 +102,77 @@ perform_projection_analysis <- function(data_frame, projection_method = PROJECTI
          mixOmics::plsda(X = data_frame[,-1], Y = data_frame$class, scale = TRUE))
 }
 
+swap_random_pairs <- function(vec, ERRORCOUNT) {
+  tab <- table(vec)
+  uv <- names(tab)
+  if (length(uv) < 2) return(vec)
+  ind1 <- which(vec == uv[1])
+  ind2 <- which(vec == uv[2])
+  swap_n <- min(length(ind1), length(ind2), ERRORCOUNT)
+  if (swap_n == 0) return(vec)
+  s1 <- sample(ind1, swap_n)
+  s2 <- sample(ind2, swap_n)
+  temp <- vec[s1]
+  vec[s1] <- vec[s2]
+  vec[s2] <- temp
+  return(vec)
+}
+
+process_scenario <- function(scenario_name, base_dataset) {
+  current_dataset <- base_dataset
+
+  if (scenario_name == "With_errors") {
+    set.seed(12345)
+    current_dataset[,1] <- swap_random_pairs(current_dataset[,1], ERRORCOUNT)
+  }
+
+  boxplot_result <- create_boxplot(current_dataset)
+  print(boxplot_result)
+
+  projection_result <- perform_projection_analysis(current_dataset, PROJECTION_TYPE)
+  projection_plot_data <- mixOmics::plotIndiv(projection_result, ellipse = FALSE, legend = TRUE, style = "graphics")
+  plot_dataframe <- projection_plot_data$df
+
+  projection_plots <- create_projection_plots(data = plot_dataframe, class_column = "group")
+
+  list(
+    projection_plot_ellipses = projection_plots$ellipse_plot + ggthemes::scale_fill_colorblind() + ggthemes::scale_color_colorblind() +
+      labs(title = paste0(scenario_name, ": ", projection_method, " projection"),  subtitle = "Confidence ellipses for prior classes"),
+    projection_plot_voronoi = projection_plots$voronoi_plot + ggthemes::scale_fill_colorblind() + ggthemes::scale_color_colorblind() +
+      labs(title = paste0(scenario_name, ": ", projection_method, " projection"),  subtitle = "Voronoi tesselation for prior classes"),
+    voronoi_plot_plus_ellipse = projection_plots$voronoi_plot_plus_ellipse + ggthemes::scale_fill_colorblind() + ggthemes::scale_color_colorblind() +
+      labs(title = paste0(scenario_name, ": ", projection_method, " projection"),  subtitle = "Voronoi tesselation and confidence ellipses for prior classes"),
+    boxplot_df_actual = boxplot_result + ggthemes::scale_fill_colorblind() + ggthemes::scale_color_colorblind() +
+      labs(title = paste0(scenario_name, ": ", "boxplots"))
+  )
+}
+
+
 ############### Main Analysis ##############################
 synthetic_dataset_2cls <- create_synthetic_dataset_2cls()
 
-boxplot_result <- create_boxplot(synthetic_dataset_2cls)
-print(boxplot_result)
-
-projection_result <- perform_projection_analysis(data_frame = synthetic_dataset_2cls, projection_method = PROJECTION_TYPE)
-projection_plot_data <- mixOmics::plotIndiv(projection_result, ellipse = FALSE, legend = TRUE, style = "graphics")
-plot_dataframe <- projection_plot_data$df
-
-# Note: create_projection_plots function needs to be sourced from create_projection_plots.R
-analysis_results <- create_projection_plots(data = plot_dataframe, class_column = "group")
+analysis_results <- lapply(SCENARIOS, function(scenario) {
+  process_scenario(scenario, synthetic_dataset_2cls)
+})
+names(analysis_results) <- SCENARIOS
 
 # Create combined plot
 final_plot_list <- list(
-  analysis_results$ellipse_plot + ggthemes::scale_fill_colorblind() + ggthemes::scale_color_colorblind(),
-  analysis_results$voronoi_plot + ggthemes::scale_fill_colorblind() + ggthemes::scale_color_colorblind()
+  analysis_results$No_errors$projection_plot_ellipses  ,
+  analysis_results$No_errors$projection_plot_voronoi,
+  analysis_results$No_errors$voronoi_plot_plus_ellipse ,
+  analysis_results$With_errors$projection_plot_ellipses,
+  analysis_results$With_errors$projection_plot_voronoi ,
+  analysis_results$With_errors$voronoi_plot_plus_ellipse
 )
 
-combined_visualization_2 <- cowplot::plot_grid(plotlist = final_plot_list, labels = "AUTO")
-print(combined_visualization_2)
+# combined_visualization_6a <- cowplot::plot_grid(plotlist = final_plot_list, labels = "AUTO")
+# print(combined_visualization_6a)
+
+combined_visualization_4a <- cowplot::plot_grid(plotlist = final_plot_list[c(1,2,4,5)], labels = "AUTO")
+print(combined_visualization_4a)
 
 ggsave(
-  filename = paste0("combined_visualization_2_artificial_", PROJECTION_TYPE, ".svg"),
-  plot = combined_visualization_2, width = 12, height = 6
+  filename = paste0("combined_visualization_4_artificial_noerror_error", Projection, ".svg"),
+  plot = combined_visualization_4a, width = 12, height = 12
 )

@@ -16,6 +16,8 @@ PROJECTION_TYPE <- "PLS-DA"  # Default projection type
 SEED <- 12
 show_labels <- FALSE
 
+source("create_projection_plots.R")
+
 ############### Data Generation Functions ##############################
 generate_variable_A <- function() {
   set.seed(SEED)
@@ -142,7 +144,8 @@ create_projection_plots <- function(projection_data, scenario_name, projection_m
     ggthemes::scale_color_colorblind() +
     ggthemes::scale_fill_colorblind() +
     theme(legend.position = c(.1, .1), legend.background = element_rect(fill = ggplot2::alpha("white", 0.2))) +
-    labs(title = paste0(scenario_name, ": ", projection_method, " projection"), x = "Dim1", y = "Dim2", color = "Class", shape = NULL, FILL = NULL) +
+    labs(title = paste0(scenario_name, ": ", projection_method, " projection"), subtitle = "Confidence ellipses for prior classes",
+         x = "Dim1", y = "Dim2", color = "Class", shape = NULL, FILL = NULL) +
     guides(shape = "none", fill = "none") +
     geom_vline(xintercept = 0, color = "grey20", linetype = "dashed") +
     geom_hline(yintercept = 0, color = "grey20", linetype = "dashed")
@@ -160,7 +163,8 @@ create_projection_plots <- function(projection_data, scenario_name, projection_m
     ggthemes::scale_fill_colorblind() +
     ggthemes::scale_color_colorblind() +
     theme_light() +
-    labs(title = paste0(scenario_name, ": ", projection_method, " projection"), x = "Dim1", y = "Dim2", color = "Class", fill = NULL, shape = NULL, group = NULL) +
+    labs(title = paste0(scenario_name, ": ", projection_method, " projection"),  subtitle = "Voronoi tesselation for prior classes",
+         x = "Dim1", y = "Dim2", color = "Class", fill = NULL, shape = NULL, group = NULL) +
     theme(legend.position = c(.1, .1), legend.background = element_rect(fill = ggplot2::alpha("white", 0.2)))
 
   if(show_labels)
@@ -219,13 +223,13 @@ print(combined_visualization_6)
 combined_visualization_4 <- cowplot::plot_grid(plotlist = final_plot_list[c(1,2,4,5)], labels = "AUTO")
 
 ggsave(
-  filename = paste0("combined_visualization_artificial_", Projection, ".svg"),
-  plot = combined_visualization, width = 18, height = 12
+  filename = paste0("combined_visualization_6_artificial__sig_nonsig", Projection, ".svg"),
+  plot = combined_visualization_6, width = 18, height = 12
 )
 
 ggsave(
-  filename = paste0("combined_visualization_artificial_", Projection, ".svg"),
-  plot = combined_visualization, width = 12, height = 12
+  filename = paste0("combined_visualization_4_artificial_sig_nonsig", Projection, ".svg"),
+  plot = combined_visualization_4, width = 12, height = 12
 )
 
 # Create combined plot
@@ -237,7 +241,7 @@ raw_data_plot_list <- list(
 Data_pvals<-  cowplot::plot_grid(plotlist = raw_data_plot_list, ncol = 1, labels = "AUTO")
 print(Data_pvals)
 ggsave(
-  filename = paste0("raw_data_artificial", ".svg"),
+  filename = paste0("raw_data_artificial_sig_nonsig", ".svg"),
   plot = Data_pvals, width = 18, height = 8
 )
 

@@ -64,7 +64,7 @@ lsun_kmeans_plot_variant2 <- create_voronoi_plot(
   ggthemes::scale_fill_colorblind() +
   labs(
     title = "FCPS Lsun k-means clusters",
-    subtitle = "Points and cells colored as prior clusters"
+    subtitle = "Points and cells colored as clusters"
   )
 
 
