@@ -17,7 +17,7 @@ ProjectionViz provides an intuitive way to visualize class separation in project
 
 ## Installation
 
-You can install ProjectionViz directly from GitHub:
+You can install voronoi_projection_plot directly from GitHub:
 ```r
 devtools::install_github("JornLotsch/voronoi_projection_plot")
 ```
