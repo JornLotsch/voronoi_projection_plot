@@ -8,12 +8,11 @@ VoronoiBiomedPlot provides an intuitive way to visualize class separation in pro
 
 ## Features
 
-- **Voronoi Tessellation Visualization**: Creates proximity-based regions showing natural class boundaries
-- **Dual Classification Support**: Allows separate classifications for point colors and Voronoi region fills
-- **Flexible Input Handling**: Works with various data formats and handles missing class labels gracefully
-- **Customizable Aesthetics**: Full control over colors, transparency, point sizes, and styling
+- **Voronoi tessellation visualization**: Creates proximity-based regions showing natural class boundaries
+- **Dual classification support**: Allows separate classifications for point colors and Voronoi region fills
+- **Customizable aesthetics**: Full control over colors, transparency, point sizes, and styling
 - **Label Support**: Optional case labeling with intelligent overlap avoidance
-- **Publication Ready**: Clean, professional plots suitable for academic and business presentations
+- **Publication ready**: Clean, professional plots suitable for academic and business presentations
 
 ## Installation
 
