@@ -53,7 +53,7 @@ plot <- create_voronoi_plot(
   coord_names = c("PC1", "PC2")
 )
 ```
-### Advanced Usage with Dual Classifications
+### Advanced usage with dual classifications
 
 ### Create alternative classification
 ```r
@@ -71,7 +71,7 @@ plot <- create_voronoi_plot(
 )
 ``` 
 
-### Specifying Coordinate Columns
+### Specifying coordinate columns
 
 ```r
 # When your data has numeric class columns that might interfere
@@ -92,7 +92,7 @@ plot <- create_voronoi_plot(
 ```
 
 
-## Main Function: `create_voronoi_plot()`
+## Main function 1: `create_voronoi_plot()`
 
 ### Call
 ```r
@@ -116,6 +116,47 @@ result <-
     fill_voronoi = "primary"
   )
 ```
+
+### Output
+
+| Output | Type | Description |
+| --- | --- | --- |
+| `result` | list | A list containing 3 named ggplot objects: |
+| `result$scatter_plot` | ggplot | Standard scatter plot of the projected data |
+| `result$voronoi_plot` | ggplot | Voronoi tessellation plot with data points |
+| `result$combined_plot` | ggplot | Combined visualization with additional features |
+
+
+## Main function 2: `create_voronoi_plot()`
+
+### Call
+```r
+result <-
+  create_voronoi_plot(
+    data,
+    class_column = NULL,
+    alternative_class_column = NULL,
+    coordinate_columns = NULL,
+    case_labels = NULL,
+    coord_names = c("Dim1", "Dim2"),
+    title = NULL,
+    show_labels = FALSE,
+    voronoi_alpha = 0.3,
+    point_size = 2,
+    legend_position = c(0.1, 0.1),
+    color_palette = NULL,
+    add_grid_lines = TRUE,
+    color_points = "primary",
+    fill_voronoi = "primary"
+  )
+```
+
+#### Output
+
+| Output | Type | Description |
+| --- | --- | --- |
+| `result` | ggplot | A single ggplot object containing the Voronoi tessellation visualization with data points overlaid |
+
 
 ### Parameters
 
@@ -143,6 +184,12 @@ result <-
 ### Basic Visualization
 <img src="./example_plot.svg">
 
+## License
+
+GPL-3
+
 ## Citation
 Lötsch, J. and A. Ultsch (2024). "Comparative assessment of projection and clustering method combinations in the analysis of biomedical data." Informatics in Medicine Unlocked 50: 101573. 
 https://www.sciencedirect.com/science/article/pii/S2352914824001291
+
+
