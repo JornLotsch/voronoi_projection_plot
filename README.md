@@ -4,7 +4,7 @@ A lightweight R code snippet for creating Voronoi tessellation visualizations of
 
 ## Overview
 
-ProjectionViz provides an intuitive way to visualize class separation in projected data using Voronoi diagrams. Voronoi tessellation divides the plot space into regions based on proximity to data points, offering an elegant visualization of class boundaries and decision regions that is particularly effective for understanding clustering and classification results.
+VoronoiBiomedPlot provides an intuitive way to visualize class separation in projected data using Voronoi diagrams. Voronoi tessellation divides the plot space into regions based on proximity to data points, offering an elegant visualization of class boundaries and decision regions that is particularly effective for understanding clustering and classification results.
 
 ## Features
 
