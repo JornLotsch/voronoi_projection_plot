@@ -189,7 +189,7 @@ GPL-3
 
 ## Citation
 
-If you use this tool in your work, please cite the repository or contact the maintainer for citation details.
+Lötsch J and Kringel D. Voronoi tessellation as a complementary alternative to confidence ellipses for visualizing data projection and clustering results. 2025 (in preparation) 
 
 
 
