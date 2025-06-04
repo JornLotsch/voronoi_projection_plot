@@ -283,7 +283,8 @@ create_projection_plots <- function(data,
     ellipse_plot <- ellipse_plot +
       ggrepel::geom_text_repel(
         ggplot2::aes(label = labels),
-        fontface = "bold",
+        fontface = "plain",
+        size = 3,
         max.overlaps = Inf,
         show.legend = FALSE
       )
@@ -346,7 +347,8 @@ create_projection_plots <- function(data,
       ggrepel::geom_text_repel(
         data = plot_dataframe,
         ggplot2::aes(x = x, y = y, color = group_color, label = labels),
-        fontface = "bold",
+        fontface = "plain",
+        size = 3,
         max.overlaps = Inf,
         show.legend = FALSE
       )
