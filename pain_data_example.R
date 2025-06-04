@@ -1,95 +1,41 @@
-# # Original data from Study 4 (QST)
-# qst_pain_models <- data.frame(
-#   readxl::read_excel(
-#     "/home/joern/Dokumente/QSTSchmerzmodelle/09Originale/Daten_Exp_pain_QST.xlsx",
-#     sheet = "DatenAnalysiert"
-#   )
-# )
-#
-# rownames(qst_pain_models) <- qst_pain_models$Probanden_Nr
-#
-# qst_pain_models_orig <- qst_pain_models
-#
-# # Align variables to "High number = low sensitivity"
-# # N/cm2 convert to kilopascal: Factor = 10
-# pain_tests_to_invert <- c(
-#   "TSACold", "CO2VAS", "LaserVAS", "CDT", "CPT",
-#   "MPS", "WUR", "VDT", "DMA"
-# )
-# newton_to_kpa <- c("PressureThr", "PressureTol")
-#
-# qst_pain_models[, names(qst_pain_models) %in% pain_tests_to_invert] <-
-#   lapply(
-#     qst_pain_models[, names(qst_pain_models) %in% pain_tests_to_invert],
-#     function(x) { -x }
-#   )
-#
-# qst_pain_models[, names(qst_pain_models) %in% newton_to_kpa] <-
-#   lapply(
-#     qst_pain_models[, names(qst_pain_models) %in% newton_to_kpa],
-#     function(x) { 10 * x }
-#   )
-#
-# pain_tests_names <- c(
-#   "PressureThr", "PressureTol", "TSACold", "ElectricThr", "ElectricTol",
-#   "Co2Thr", "CO2VAS", "LaserThr", "LaserVAS",
-#   "CDT", "WDT", "TSL", "CPT", "HPT", "PPT", "MPT", "MPS", "WUR", "MDT"
-# )
-#
-# # Extract only pain tests, remove demographics etc.
-# pain_tests <- subset(qst_pain_models, select = pain_tests_names)
-# dim(pain_tests)
-#
-# pain_tests_to_log_names <- pain_tests_names
-# pain_tests_log <- pain_tests
-# pain_tests_log[, names(pain_tests_log) %in% pain_tests_to_log_names] <-
-#   lapply(
-#     pain_tests_log[, names(pain_tests_log) %in% pain_tests_to_log_names],
-#     function(x, mi = min(x, na.rm = TRUE)) {
-#       log10(x - mi + 1)
-#     }
-#   )
-#
-# pain_tests_data <- cbind.data.frame(
-#   class = qst_pain_models_orig$Geschlecht_N_m1,
-#   pain_tests_log
-# )
-# pain_tests_data_complete <- na.omit(pain_tests_data)
-# dim(pain_tests_data_complete)
-#
-# write.csv(
-#   x = pain_tests_data_complete,
-#   file = paste0("QSTpainEJP", ".csv")
-# )
+############### Libraries ##############################
+library(mixOmics)
+library(ggplot2)
+library(cowplot)
+library(ggpubr)
+library(ggfortify)
+library(ggthemes)
 
-# Read the pain data
-# pain_data_transformed <- read.csv("/home/joern/Aktuell/QST_DIB/DataSetPublished/qst_pain_data_transformed.csv", row.names = 1)
-# pain_metadata <- read.csv("/home/joern/Aktuell/QST_DIB/DataSetPublished/qst_pain_metadata.csv", row.names = 1)
-# pain_tests_data_complete <- cbind.data.frame(class = pain_metadata$Sex_m1, pain_data_transformed)
-# rownames(pain_tests_data_complete) <- rownames(pain_data_transformed)
-# pain_tests_data_complete <- na.omit(pain_tests_data_complete)
-# dim(pain_tests_data_complete)
-#
-# write.csv(
-#   x = pain_tests_data_complete,
-#   file = paste0("QSTpainEJP", ".csv")
-# )
+############### Constants ##############################
+PROJECTION_TYPE <- "PLS-DA"  # Default projection type
 
-
-############################## Start here ##########################################################
-# Read the pain data
-
-pain_tests_data_complete <- read.csv(file = paste0("QSTpainEJP", ".csv"), row.names = 1)
-dim(pain_tests_data_complete)
-table(pain_tests_data_complete$class)
-
-#### Project and plot the data ####
+############### Functions ##############################
+perform_projection_analysis <- function(data_frame, projection_method = PROJECTION_TYPE) {
+  switch(projection_method,
+         "PLS-DA" = mixOmics::plsda(X = data_frame[,-1], Y = data_frame$class, scale = TRUE, ncomp = 2),
+         "PCA" = mixOmics::pca(X = data_frame[,-1], scale = TRUE),
+         mixOmics::plsda(X = data_frame[,-1], Y = data_frame$class, scale = TRUE))
+}
 
 source("create_projection_plots.R")
 
+############### Read the pain data ##############################
+pain_tests_data <- read.csv(file = paste0("/home/joern/Aktuell/QST_DIB/DataSetPublished/qst_pain_data_transformed", ".csv"), row.names = 1)
+dim(pain_tests_data)
+pain_tests_metadata <- read.csv(file = paste0("/home/joern/Aktuell/QST_DIB/DataSetPublished/qst_pain_metadata", ".csv"), row.names = 1)
+pain_tests_data_complete <- na.omit(cbind.data.frame(class = pain_tests_metadata$Sex_m1, pain_tests_data))
+dim(pain_tests_data_complete)
+table(pain_tests_data_complete$class)
+
+############### Parameters ##############################
+projection_method <- "PLS-DA"
+
+############### Project and plot the data ##############################
+
+set.seed(42)
 proj_pain_tests_data_complete <- perform_projection_analysis(
   data_frame = pain_tests_data_complete,
-  projection_method = "PLS-DA"
+  projection_method = projection_method
 )
 
 proj_pain_tests_data_complete_data <- mixOmics::plotIndiv(
@@ -148,8 +94,7 @@ ggsave(
   height = 6
 )
 
-## PCA and Ward
-library(ggfortify)
+############### PCA and Ward ##############################
 df <- pain_tests_data_complete[,-1]
 pca_res <- prcomp(df, scale. = TRUE)
 autoplot(pca_res, loadings = TRUE, loadings.label = TRUE)
@@ -177,5 +122,6 @@ create_projection_plots(
   coordinate_columns = c("PC1", "PC2"),
   case_labels = rownames(pain_tests_data_complete_clusters),
   alternative_class_column = "class",
-  show_labels = TRUE, fill_voronoi = "alternative"
+  show_labels = TRUE,
+  fill_voronoi = "alternative"
 )

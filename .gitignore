@@ -3,3 +3,7 @@ QSTpainEJP.csv
 *.svg
 Lsun_OriginalData.csv
 pain_combined_visualization_6.svg
+.Rproj.user
+*.Rproj
+*.Rhist*
+*.RData
