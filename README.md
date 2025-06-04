@@ -188,7 +188,8 @@ result <-
 GPL-3
 
 ## Citation
-Lötsch, J. and A. Ultsch (2024). "Comparative assessment of projection and clustering method combinations in the analysis of biomedical data." Informatics in Medicine Unlocked 50: 101573. 
-https://www.sciencedirect.com/science/article/pii/S2352914824001291
+
+If you use this tool in your work, please cite the repository or contact the maintainer for citation details.
+
 
 
