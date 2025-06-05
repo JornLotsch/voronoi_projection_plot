@@ -16,10 +16,9 @@ VoronoiBiomedPlot provides an intuitive way to visualize class separation in pro
 
 ## Installation
 
-You can install voronoi_projection_plot directly from GitHub:
-```r
-devtools::install_github("JornLotsch/voronoi_projection_plot")
-```
+You can download this code to you local hard drive and run it from there. 
+An R library "VoronoiBiomedPlot" will be available and then mentioned here.
+
 ## Dependencies
 
 The package requires:
@@ -108,11 +107,13 @@ result <-
     ellipse_alpha = 0.1,
     voronoi_alpha = 0.3,
     point_size = 2,
-    legend_position = c(0.1, 0.1),
+    legend_position = "bottom",
     color_palette = NULL,
-    add_grid_lines = TRUE,
+    add_grid_lines = FALSE,
     color_points = "primary",
-    fill_voronoi = "primary"
+    fill_voronoi = "primary",
+    label_fontface = "plain",
+    label_size = 3.88
   )
 ```
 
@@ -140,13 +141,16 @@ result <-
     coord_names = c("Dim1", "Dim2"),
     title = NULL,
     show_labels = FALSE,
+    ellipse_alpha = 0.1,
     voronoi_alpha = 0.3,
     point_size = 2,
-    legend_position = c(0.1, 0.1),
+    legend_position = "bottom",
     color_palette = NULL,
-    add_grid_lines = TRUE,
+    add_grid_lines = FALSE,
     color_points = "primary",
-    fill_voronoi = "primary"
+    fill_voronoi = "primary",
+    label_fontface = "plain",
+    label_size = 3.88
   )
 ```
 
@@ -158,25 +162,26 @@ result <-
 
 
 ### Parameters
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `data` | data.frame | - | Data with ≥2 numeric columns for coordinates |
-| `class_column` | character/vector | NULL | Column name or vector of class labels |
-| `alternative_class_column` | character/vector | NULL | Alternative column name or vector of class labels |
+| Parameter | Type | Default | Description                                                                |
+|-----------|------|---------|----------------------------------------------------------------------------|
+| `data` | data.frame | - | Data with ≥2 numeric columns for coordinates                               |
+| `class_column` | character/vector | NULL | Column name or vector of class labels                                      |
+| `alternative_class_column` | character/vector | NULL | Alternative column name or vector of class labels                          |
 | `coordinate_columns` | character vector | NULL | Column names to use as coordinates (if NULL, uses first 2 numeric columns) |
-| `case_labels` | character vector | NULL | Individual case labels (uses row numbers if NULL) |
-| `coord_names` | character vector | c("Dim1", "Dim2") | Names for coordinate axes |
-| `title` | character | NULL | Plot title |
-| `show_labels` | logical | FALSE | Whether to show case labels |
-| `voronoi_alpha` | numeric | 0.3 | Transparency of Voronoi regions (0-1) |
-| `point_size` | numeric | 2 | Size of data points |
-| `legend_position` | character/numeric | c(0.1, 0.1) | Legend position |
-| `color_palette` | function/character | NULL | Custom color palette |
-| `add_grid_lines` | logical | TRUE | Whether to add origin grid lines |
-| `color_points` | character | "primary" | Which classification to use for point colors ("primary" or "alternative") |
+| `case_labels` | character vector | NULL | Individual case labels (uses row numbers if NULL)                          |
+| `coord_names` | character vector | c("Dim1", "Dim2") | Names for coordinate axes                                                  |
+| `title` | character | NULL | Plot title                                                                 |
+| `show_labels` | logical | FALSE | Whether to show case labels                                                |
+| `ellipse_alpha` | numeric | 0.1 | Transparency of ellipse regions (0-1)                                      |
+| `voronoi_alpha` | numeric | 0.3 | Transparency of Voronoi regions (0-1)                                      |
+| `point_size` | numeric | 2 | Size of data points                                                        |
+| `legend_position` | character/numeric | "bottom" | Legend position                                                            |
+| `color_palette` | function/character | NULL | Custom color palette                                                       |
+| `add_grid_lines` | logical | FALSE | Whether to add origin grid lines                                           |
+| `color_points` | character | "primary" | Which classification to use for point colors ("primary" or "alternative")  |
 | `fill_voronoi` | character | "primary" | Which classification to use for Voronoi fills ("primary" or "alternative") |
-
+| `label_fontface` | character | "plain" | Font face for case labels ("plain", "bold", "italic", "bold.italic")       |
+| `label_size` | numeric | 3.88 | Size of case labels                                                        |
 
 ## Examples
 

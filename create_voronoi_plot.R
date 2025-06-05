@@ -76,7 +76,7 @@ create_voronoi_plot <- function(data,
                                 color_points = "primary",
                                 fill_voronoi = "primary",
                                 label_fontface = "plain",
-                                label_size = 3) {
+                                label_size = 3.88) {
   # Input validation
   if (!is.data.frame(data)) {
     stop("'data' must be a data.frame")
