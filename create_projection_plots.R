@@ -87,7 +87,7 @@ create_projection_plots <- function(data,
                                     add_grid_lines = FALSE,
                                     color_points = "primary",
                                     fill_voronoi = "primary",
-                                    point_shape = "none",  # Add this line
+                                    point_shape = "none",
                                     label_fontface = "plain",
                                     label_size = 3.88) {
   
