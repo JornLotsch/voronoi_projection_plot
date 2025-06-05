@@ -112,6 +112,7 @@ result <-
     add_grid_lines = FALSE,
     color_points = "primary",
     fill_voronoi = "primary",
+    point_shape = "none",
     label_fontface = "plain",
     label_size = 3.88
   )
@@ -149,6 +150,7 @@ result <-
     add_grid_lines = FALSE,
     color_points = "primary",
     fill_voronoi = "primary",
+    point_shape = "none",
     label_fontface = "plain",
     label_size = 3.88
   )
@@ -180,6 +182,7 @@ result <-
 | `add_grid_lines` | logical | FALSE | Whether to add origin grid lines                                           |
 | `color_points` | character | "primary" | Which classification to use for point colors ("primary" or "alternative")  |
 | `fill_voronoi` | character | "primary" | Which classification to use for Voronoi fills ("primary" or "alternative") |
+| `point_shape` | character | "none" | Which classification to use for Voronoi fills ("primary", "alternative" or "none") |
 | `label_fontface` | character | "plain" | Font face for case labels ("plain", "bold", "italic", "bold.italic")       |
 | `label_size` | numeric | 3.88 | Size of case labels                                                        |
 

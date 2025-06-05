@@ -33,6 +33,9 @@
 #' @param fill_voronoi Character string specifying which classification to use for Voronoi fill.
 #'   Either "primary" (uses class_column) or "alternative" (uses alternative_class_column).
 #'   Default: "primary".
+#' @param point_shape Character string specifying which classification to use for point shapes.
+#'   Either "primary" (uses class_column), "alternative" (uses alternative_class_column),
+#'   or "none" (no shape differentiation). Default: "none".
 #' @param label_fontface Character string specifying the font face for text labels.
 #'   Options include "plain", "bold", "italic", "bold.italic". Default: "plain".
 #' @param label_size Numeric value specifying the size of text labels. Default: 3.
@@ -75,6 +78,7 @@ create_voronoi_plot <- function(data,
                                 add_grid_lines = FALSE,
                                 color_points = "primary",
                                 fill_voronoi = "primary",
+                                point_shape = "none",
                                 label_fontface = "plain",
                                 label_size = 3.88) {
   # Input validation
@@ -92,6 +96,11 @@ create_voronoi_plot <- function(data,
   
   if (!fill_voronoi %in% c("primary", "alternative")) {
     stop("'fill_voronoi' must be either 'primary' or 'alternative'")
+  }
+  
+  if (!point_shape %in% c("primary", "alternative", "none")) {
+    point_shape <- "none"
+    warning("'point_shape' must be either 'primary', 'alternative', or 'none'. Setting to 'none'.")
   }
   
   # Extract coordinates
@@ -161,6 +170,14 @@ create_voronoi_plot <- function(data,
     plot_dataframe$group_alternative
   }
   
+  plot_dataframe$group_shape <- if (point_shape == "primary") {
+    plot_dataframe$group_primary
+  } else if (point_shape == "alternative") {
+    plot_dataframe$group_alternative
+  } else {
+    factor(rep(1, nrow(plot_dataframe)))  # All same shape when "none"
+  }
+  
   # Handle case labels
   if (is.null(case_labels)) {
     plot_dataframe$labels <- as.character(seq_len(nrow(data)))
@@ -209,19 +226,37 @@ create_voronoi_plot <- function(data,
   )
   
   # Create Voronoi plot
-  voronoi_plot <- ggplot2::ggplot() +
-    ggplot2::geom_polygon(
-      data = voronoi_data,
-      ggplot2::aes(x = x, y = y, group = id, fill = class),
-      alpha = voronoi_alpha,
-      color = NA,
-      show.legend = FALSE
-    ) +
-    ggplot2::geom_point(
-      data = plot_dataframe,
-      ggplot2::aes(x = x, y = y, color = group_color),
-      size = point_size
-    ) +
+  if (point_shape == "none") {
+    voronoi_plot <- ggplot2::ggplot() +
+      ggplot2::geom_polygon(
+        data = voronoi_data,
+        ggplot2::aes(x = x, y = y, group = id, fill = class),
+        alpha = voronoi_alpha,
+        color = NA,
+        show.legend = FALSE
+      ) +
+      ggplot2::geom_point(
+        data = plot_dataframe,
+        ggplot2::aes(x = x, y = y, color = group_color),
+        size = point_size
+      )
+  } else {
+    voronoi_plot <- ggplot2::ggplot() +
+      ggplot2::geom_polygon(
+        data = voronoi_data,
+        ggplot2::aes(x = x, y = y, group = id, fill = class),
+        alpha = voronoi_alpha,
+        color = NA,
+        show.legend = FALSE
+      ) +
+      ggplot2::geom_point(
+        data = plot_dataframe,
+        ggplot2::aes(x = x, y = y, color = group_color, shape = group_shape),
+        size = point_size
+      )
+  }
+  
+  voronoi_plot <- voronoi_plot +
     ggplot2::theme_light() +
     ggplot2::labs(
       title = title,

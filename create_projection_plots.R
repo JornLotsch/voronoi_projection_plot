@@ -35,6 +35,9 @@
 #' @param fill_voronoi Character string specifying which classification to use for Voronoi fill.
 #'   Either "primary" (uses class_column) or "alternative" (uses alternative_class_column).
 #'   Default: "primary".
+#' @param point_shape Character string specifying which classification to use for point shapes.
+#'   Either "primary" (uses class_column), "alternative" (uses alternative_class_column),
+#'   or "none" (no shape differentiation). Default: "none".
 #' @param label_fontface Character string specifying the font face for text labels.
 #'   Options include "plain", "bold", "italic", "bold.italic". Default: "plain".
 #' @param label_size Numeric value specifying the size of text labels. Default: 3.
@@ -84,6 +87,7 @@ create_projection_plots <- function(data,
                                     add_grid_lines = FALSE,
                                     color_points = "primary",
                                     fill_voronoi = "primary",
+                                    point_shape = "none",  # Add this line
                                     label_fontface = "plain",
                                     label_size = 3.88) {
   
@@ -102,6 +106,11 @@ create_projection_plots <- function(data,
   
   if (!fill_voronoi %in% c("primary", "alternative")) {
     stop("'fill_voronoi' must be either 'primary' or 'alternative'")
+  }
+  
+  if (!point_shape %in% c("primary", "alternative", "none")) {
+    point_shape <- "none"
+    warning("'point_shape' must be either 'primary', 'alternative', or 'none'. Setting to 'none'.")
   }
   
   # Extract coordinates
@@ -171,6 +180,15 @@ create_projection_plots <- function(data,
     plot_dataframe$group_alternative
   }
   
+  # Add shape grouping variable
+  plot_dataframe$group_shape <- if (point_shape == "primary") {
+    plot_dataframe$group_primary
+  } else if (point_shape == "alternative") {
+    plot_dataframe$group_alternative
+  } else {
+    factor(rep(1, nrow(plot_dataframe)))  # All same shape when "none"
+  }
+  
   # Handle case labels
   if (is.null(case_labels)) {
     plot_dataframe$labels <- as.character(seq_len(nrow(data)))
@@ -221,8 +239,14 @@ create_projection_plots <- function(data,
   
   # Create base plot for ellipse plot
   create_ellipse_base_plot <- function() {
-    p <- ggplot2::ggplot(data = plot_dataframe,
-                         ggplot2::aes(x = x, y = y, color = group_color, fill = group_primary, shape = group_color))
+    # Conditional aesthetics based on point_shape parameter
+    if (point_shape == "none") {
+      p <- ggplot2::ggplot(data = plot_dataframe,
+                           ggplot2::aes(x = x, y = y, color = group_color, fill = group_primary))
+    } else {
+      p <- ggplot2::ggplot(data = plot_dataframe,
+                           ggplot2::aes(x = x, y = y, color = group_color, fill = group_primary, shape = group_shape))
+    }
     
     if (!is.null(color_palette)) {
       if (is.function(color_palette)) {
@@ -237,8 +261,19 @@ create_projection_plots <- function(data,
       ggplot2::theme(
         legend.position = legend_position,
         legend.background = ggplot2::element_rect(fill = ggplot2::alpha("white", 0.2))
-      ) +
-      ggplot2::labs(
+      )
+    
+    # Conditional labs based on point_shape parameter
+    if (point_shape == "none") {
+      p <- p + ggplot2::labs(
+        title = title,
+        x = coord_names[1],
+        y = coord_names[2],
+        color = "Class",
+        fill = "Class"
+      )
+    } else {
+      p <- p + ggplot2::labs(
         title = title,
         x = coord_names[1],
         y = coord_names[2],
@@ -246,6 +281,7 @@ create_projection_plots <- function(data,
         fill = "Class",
         shape = "Class"
       )
+    }
     
     if (add_grid_lines) {
       p <- p + ggplot2::geom_vline(xintercept = 0, color = "grey20", linetype = "dashed") +
@@ -260,6 +296,13 @@ create_projection_plots <- function(data,
     ggplot2::geom_point(size = point_size) +
     ggplot2::stat_ellipse(geom = "polygon", alpha = ellipse_alpha) +
     ggplot2::guides(shape = "none", fill = "none")
+  
+  # Conditional guides based on point_shape parameter
+  if (point_shape == "none") {
+    ellipse_plot <- ellipse_plot + ggplot2::guides(fill = "none")
+  } else {
+    ellipse_plot <- ellipse_plot + ggplot2::guides(shape = "none", fill = "none")
+  }
   
   if (show_labels && requireNamespace("ggrepel", quietly = TRUE)) {
     ellipse_plot <- ellipse_plot +
@@ -280,19 +323,38 @@ create_projection_plots <- function(data,
     bounding_box = unlist(get_plot_limits(ellipse_plot))
   )
   
-  voronoi_plot <- ggplot2::ggplot() +
-    ggplot2::geom_polygon(
-      data = voronoi_data,
-      ggplot2::aes(x = x, y = y, group = id, fill = class),
-      alpha = voronoi_alpha,
-      color = NA,
-      show.legend = FALSE
-    ) +
-    ggplot2::geom_point(
-      data = plot_dataframe,
-      ggplot2::aes(x = x, y = y, color = group_color),
-      size = point_size
-    ) +
+  # Build voronoi plot with conditional aesthetics
+  if (point_shape == "none") {
+    voronoi_plot <- ggplot2::ggplot() +
+      ggplot2::geom_polygon(
+        data = voronoi_data,
+        ggplot2::aes(x = x, y = y, group = id, fill = class),
+        alpha = voronoi_alpha,
+        color = NA,
+        show.legend = FALSE
+      ) +
+      ggplot2::geom_point(
+        data = plot_dataframe,
+        ggplot2::aes(x = x, y = y, color = group_color),
+        size = point_size
+      )
+  } else {
+    voronoi_plot <- ggplot2::ggplot() +
+      ggplot2::geom_polygon(
+        data = voronoi_data,
+        ggplot2::aes(x = x, y = y, group = id, fill = class),
+        alpha = voronoi_alpha,
+        color = NA,
+        show.legend = FALSE
+      ) +
+      ggplot2::geom_point(
+        data = plot_dataframe,
+        ggplot2::aes(x = x, y = y, color = group_color, shape = group_shape),
+        size = point_size
+      )
+  }
+  
+  voronoi_plot <- voronoi_plot +
     ggplot2::theme_light() +
     ggplot2::labs(
       title = title,
@@ -322,15 +384,27 @@ create_projection_plots <- function(data,
   }
   
   if (show_labels && requireNamespace("ggrepel", quietly = TRUE)) {
-    voronoi_plot <- voronoi_plot +
-      ggrepel::geom_text_repel(
-        data = plot_dataframe,
-        ggplot2::aes(x = x, y = y, color = group_color, label = labels),
-        fontface = label_fontface,
-        size = label_size,
-        max.overlaps = Inf,
-        show.legend = FALSE
-      )
+    if (point_shape == "none") {
+      voronoi_plot <- voronoi_plot +
+        ggrepel::geom_text_repel(
+          data = plot_dataframe,
+          ggplot2::aes(x = x, y = y, color = group_color, label = labels),
+          fontface = label_fontface,
+          size = label_size,
+          max.overlaps = Inf,
+          show.legend = FALSE
+        )
+    } else {
+      voronoi_plot <- voronoi_plot +
+        ggrepel::geom_text_repel(
+          data = plot_dataframe,
+          ggplot2::aes(x = x, y = y, color = group_color, label = labels),
+          fontface = label_fontface,
+          size = label_size,
+          max.overlaps = Inf,
+          show.legend = FALSE
+        )
+    }
   }
   
   # Create combined plot
