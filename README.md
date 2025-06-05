@@ -188,13 +188,19 @@ result <-
 ### Basic Visualization
 <img src="./example_plot.svg">
 
+## Local data
+
+- **MetaboAnalyst_Download.zip**:
+
+An online statistical analysis was performed at https://dev.metaboanalyst.ca/MetaboAnalyst/upload/MultifacUploadView.xhtml on liquid chromatography-mass spectrometry (LC-MS) peak intensity data from 59 samples, including 20 healthy controls and 39 patients with SARS-CoV-2 infection (data from https://api2.xialab.ca/api/download/metaboanalyst/covid_metabolomics_data.csv, metadata from https://api2.xialab.ca/api/download/metaboanalyst/covid_metadata_multiclass.csv). The compressed folder contains the comple report including raw and procssed data files.
+
 ## License
 
 GPL-3
 
 ## Citation
 
-Lötsch J and Kringel D. Voronoi tessellation as a complementary alternative to confidence ellipses for visualizing data projection and clustering results. 2025 (in preparation) 
+Lötsch J and Kringel D. Voronoi tessellation as a complement or replacement for confidence ellipses in the visualization of data projection and clustering results. 2025 (in preparation) 
 
 
 
