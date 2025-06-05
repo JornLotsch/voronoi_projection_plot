@@ -1,6 +1,7 @@
 ############### Read the COVID data ##############################
 covid_metaboanalyst_pca_score <- read.csv("covid_metabolomics_pca_score.csv", row.names = 1)
-covid_metaboanalyst_pca_score$covid <- c(rep(1,39), rep(0,20))
+covid_metaboanalyst_pca_score$covid <- ifelse(str_detect(rownames(covid_metaboanalyst_pca_score), "Pt"), 1,
+                ifelse(str_detect(rownames(covid_metaboanalyst_pca_score), "HC"), 0, NA))
 
 ############### Parameters ##############################
 projection_method <- "PCA"
