@@ -14,7 +14,7 @@ covid_tests_data_complete_plot <- create_projection_plots(
   data = covid_metaboanalyst_pca_score,
   class_column = "covid",
   case_labels = rownames(covid_metaboanalyst_pca_score),
-  show_labels = TRUE
+  show_labels = FALSE
 )
 
 # Create individual plots
@@ -55,20 +55,22 @@ get_plot_limits <- function(plot) {
   )
 }
 
-
-covid_voronoi_contur_plot <- 
-  ggplot(data = covid_metaboanalyst_pca_score, aes(x = PC1, y = PC2, color = as.factor(covid), fill = as.factor(covid))) +
+# 2D density contour plot
+covid_voronoi_contour_plot <- 
+  ggplot(data = covid_metaboanalyst_pca_score, aes(x = PC1, y = PC2, color = as.factor(covid))) +
   geom_point() +
-  stat_density_2d(show.legend = FALSE) + 
+  stat_density_2d(show.legend = FALSE, linewidth = .7) + 
   theme_light() +
   ggthemes::scale_color_colorblind() +
   ggthemes::scale_fill_colorblind()+
   labs(
     title = paste0("COVID data: ", projection_method, " projection"),
-    subtitle = "Contour plot analogous to the MetaboAnalyst default"
+    subtitle = "2D density contour plot",
+    color = "COVID-19"
   ) +
   xlim(unlist(get_plot_limits(covid_ellipse_plot))[1:2]) +
-  ylim(unlist(get_plot_limits(covid_ellipse_plot))[3:4]) 
+  ylim(unlist(get_plot_limits(covid_ellipse_plot))[3:4]) +
+  theme(legend.position = "bottom")
   
 # Combine plots
 covid_combined_visualization_3 <- cowplot::plot_grid(
@@ -82,8 +84,8 @@ print(covid_combined_visualization_3)
 ggsave(
   filename = "covid_combined_visualization_3.svg",
   plot = covid_combined_visualization_3,
-  width = 27,
-  height = 9
+  width = 18,
+  height = 6
 )
 
 # Combine plots 4
@@ -91,7 +93,7 @@ covid_combined_visualization_4 <- cowplot::plot_grid(
   covid_ellipse_plot,
   covid_voronoi_plot,
   covid_voronoi_ellipse_plot,
-  covid_voronoi_contur_plot,
+  covid_voronoi_contour_plot,
   labels = "AUTO",
   nrow = 2
 )
@@ -100,6 +102,6 @@ print(covid_combined_visualization_4)
 ggsave(
   filename = "covid_combined_visualization_4.svg",
   plot = covid_combined_visualization_4,
-  width = 16,
-  height = 16
+  width = 12,
+  height = 13
 )
