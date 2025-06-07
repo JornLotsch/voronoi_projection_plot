@@ -17,7 +17,12 @@ VoronoiBiomedPlot provides an intuitive way to visualize class separation in pro
 ## Installation
 
 You can download this code to you local hard drive and run it from there. 
-An R library "VoronoiBiomedPlot" will be available and then mentioned here.
+
+An R library "VoronoiBiomedPlot" is availabe at https://cran.r-project.org/package=VoronoiBiomedPlot.
+It can be installed directly:
+```r
+install.packages("VoronoiBiomedPlot")
+```
 
 ## Dependencies
 
@@ -203,7 +208,7 @@ GPL-3
 
 ## Citation
 
-Lötsch J and Kringel D. Voronoi tessellation as a complement or replacement for confidence ellipses in the visualization of data projection and clustering results. 2025 (in preparation) 
+Lötsch J and Kringel D. Voronoi tessellation as a complement or replacement for confidence ellipses in the visualization of data projection and clustering results. 2025 (submitted) 
 
 
 
