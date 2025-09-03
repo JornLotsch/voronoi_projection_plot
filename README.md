@@ -29,7 +29,8 @@ install.packages("VoronoiBiomedPlot")
 The package requires:
 - `ggplot2` (for plotting)
 - `deldir` (for Voronoi tessellation)
-- `ggrepel` (optional, for smart label positioning)
+- `ggrepel` (for smart label positioning)
+- `MASS` (for elipses computations)
 
 ## Quick Start
 
